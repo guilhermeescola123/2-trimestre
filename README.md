@@ -17,5 +17,4 @@ Este repositório celebra a rica e vital conexão entre o campo e a cidade — s
 - 🎨 **Arte e Cultura**: exposições, murais colaborativos, contação de histórias, culinária tradicional.
 - 🤝 **Conexões**: roteiros turísticos, intercâmbios entre escolas do campo e da cidade.
 
-## 🛠 Estrutura do Projeto
 
