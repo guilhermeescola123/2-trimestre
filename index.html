@@ -6,168 +6,261 @@
 <title>Agrinho - Conexão Campo e Cidade</title>
 <style>
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #6b8e23, #98fb98);
-    color: #2f4f4f;
-    margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to top, #87ceeb, #f0e68c);
+    margin: 0; padding: 0;
     display: flex;
-    height: 100vh;
     justify-content: center;
     align-items: center;
+    height: 100vh;
   }
-  #game-container {
+  #game {
     background: white;
-    border-radius: 12px;
-    padding: 30px 40px;
-    width: 90%;
-    max-width: 600px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+    width: 400px;
+    height: 650px;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
   }
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  button {
+  #score {
+    font-size: 22px;
+    padding: 15px;
     background-color: #6b8e23;
     color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    text-align: center;
+  }
+  .item {
+    width: 50px;
+    height: 50px;
+    position: absolute;
     cursor: pointer;
-    font-size: 1.1rem;
-    margin-top: 20px;
+    user-select: none;
+    transition: transform 0.3s;
+  }
+  .item:active {
+    transform: scale(0.8);
+  }
+  #city {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to top, #444, #888);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-bottom: 10px;
+  }
+  .building {
+    width: 40px;
+    height: 100px;
+    background-color: #222;
+    border-radius: 5px 5px 0 0;
+    box-shadow: inset 0 0 10px #666;
+  }
+  .building:nth-child(2) {
+    height: 130px;
+  }
+  .building:nth-child(4) {
+    height: 110px;
+  }
+  #message {
+    position: absolute;
+    top: 70px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #2f4f4f;
+    height: 30px;
+  }
+  #start-screen, #game-over {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+  }
+  button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background-color: #6b8e23;
+    color: white;
+    cursor: pointer;
+    margin-top: 15px;
   }
   button:hover {
     background-color: #556b2f;
-  }
-  .question {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
-  .options {
-    list-style: none;
-    padding: 0;
-  }
-  .options li {
-    margin: 8px 0;
-  }
-  .options li button {
-    width: 100%;
-    background-color: #a9d18e;
-    color: #2f4f4f;
-    font-weight: bold;
-  }
-  .options li button:hover {
-    background-color: #7fbf00;
-    color: white;
-  }
-  .score {
-    text-align: center;
-    font-size: 1.3rem;
-    margin-top: 20px;
   }
 </style>
 </head>
 <body>
 
-<div id="game-container">
-  <h1>Agrinho - Conexão Campo e Cidade</h1>
+<div id="game">
+  <div id="score">Pontuação: 0</div>
+  <div id="message"></div>
+
   <div id="start-screen">
-    <p>Vamos aprender sobre a importância do campo e da cidade! Clique para começar.</p>
+    <h2>Agrinho - Conexão Campo e Cidade</h2>
+    <p>Clique nos produtos que caem do campo para levar para a cidade!</p>
     <button id="start-btn">Começar</button>
   </div>
 
-  <div id="quiz" style="display:none;">
-    <div class="question" id="question-text"></div>
-    <ul class="options" id="options-list"></ul>
+  <div id="game-over" style="display:none;">
+    <h2>Fim de jogo!</h2>
+    <p id="final-score"></p>
+    <button id="restart-btn">Jogar novamente</button>
   </div>
 
-  <div id="result" style="display:none;">
-    <p class="score" id="score-text"></p>
-    <button id="restart-btn">Jogar novamente</button>
+  <div id="city">
+    <div class="building"></div>
+    <div class="building"></div>
+    <div class="building"></div>
+    <div class="building"></div>
+    <div class="building"></div>
   </div>
 </div>
 
 <script>
-  const questions = [
-    {
-      question: "Qual produto agrícola é fundamental para a alimentação nas cidades?",
-      options: ["Arroz", "Petróleo", "Aço", "Computador"],
-      answer: 0
-    },
-    {
-      question: "O que a cidade recebe do campo?",
-      options: ["Alimentos frescos", "Ar puro", "Animais selvagens", "Oceano"],
-      answer: 0
-    },
-    {
-      question: "Qual é a principal função das áreas urbanas na conexão com o campo?",
-      options: ["Produzir alimentos", "Comercializar produtos agrícolas", "Plantar árvores", "Criar animais"],
-      answer: 1
-    },
-    {
-      question: "Qual tecnologia ajuda na produção agrícola moderna?",
-      options: ["Internet", "Máquinas agrícolas", "Cimento", "Redes sociais"],
-      answer: 1
-    },
-    {
-      question: "Por que é importante valorizar o trabalho no campo?",
-      options: ["Para garantir comida na cidade", "Só para quem mora no campo", "Para construir prédios", "Para ter mais carros"],
-      answer: 0
-    }
-  ];
-
+  const game = document.getElementById('game');
+  const scoreEl = document.getElementById('score');
+  const startScreen = document.getElementById('start-screen');
+  const gameOverScreen = document.getElementById('game-over');
+  const finalScoreEl = document.getElementById('final-score');
   const startBtn = document.getElementById('start-btn');
   const restartBtn = document.getElementById('restart-btn');
-  const startScreen = document.getElementById('start-screen');
-  const quiz = document.getElementById('quiz');
-  const result = document.getElementById('result');
-  const questionText = document.getElementById('question-text');
-  const optionsList = document.getElementById('options-list');
-  const scoreText = document.getElementById('score-text');
+  const messageEl = document.getElementById('message');
 
-  let currentQuestion = 0;
   let score = 0;
+  let gameInterval;
+  let spawnInterval;
+  let items = [];
+  let gameActive = false;
+  const gameHeight = 650;
+  const gameWidth = 400;
+  const cityHeight = 150;
 
-  startBtn.addEventListener('click', startGame);
-  restartBtn.addEventListener('click', restartGame);
+  // Produtos do campo (emojis)
+  const produtos = [
+    {name: 'Milho', emoji: '🌽', msg: 'Milho alimenta a cidade!'},
+    {name: 'Tomate', emoji: '🍅', msg: 'Tomate fresquinho para a cidade.'},
+    {name: 'Abóbora', emoji: '🎃', msg: 'Abóboras chegam à mesa urbana.'},
+    {name: 'Trigo', emoji: '🌾', msg: 'Trigo para o pão da cidade.'},
+    {name: 'Maçã', emoji: '🍎', msg: 'Maçã saudável direto do campo.'}
+  ];
 
-  function startGame() {
-    startScreen.style.display = 'none';
-    quiz.style.display = 'block';
-    currentQuestion = 0;
-    score = 0;
-    showQuestion();
+  function criarItem() {
+    const item = document.createElement('div');
+    item.classList.add('item');
+
+    // Escolhe produto aleatório
+    const prod = produtos[Math.floor(Math.random() * produtos.length)];
+    item.textContent = prod.emoji;
+    item.dataset.msg = prod.msg;
+
+    // Posição horizontal aleatória
+    const x = Math.random() * (gameWidth - 50);
+    item.style.left = `${x}px`;
+    item.style.top = `0px`;
+
+    // Velocidade aleatória
+    item.speed = 1 + Math.random() * 2;
+
+    item.addEventListener('click', () => {
+      if (!gameActive) return;
+      score++;
+      scoreEl.textContent = `Pontuação: ${score}`;
+      showMessage(item.dataset.msg);
+
+      // Animação de sumir
+      item.style.transition = 'transform 0.3s, opacity 0.3s';
+      item.style.transform = 'scale(0)';
+      item.style.opacity = '0';
+      setTimeout(() => {
+        if (item.parentElement) {
+          game.removeChild(item);
+        }
+        items = items.filter(i => i !== item);
+      }, 300);
+    });
+
+    game.appendChild(item);
+    items.push(item);
   }
 
-  function showQuestion() {
-    const q = questions[currentQuestion];
-    questionText.textContent = q.question;
-    optionsList.innerHTML = '';
-
-    q.options.forEach((option, index) => {
-      const li = document.createElement('li');
-      const btn = document.createElement('button');
-      btn.textContent = option;
-      btn.addEventListener('click', () => selectAnswer(index));
-      li.appendChild(btn);
-      optionsList.appendChild(li);
+  function updateItems() {
+    if (!gameActive) return;
+    items.forEach(item => {
+      let currentTop = parseFloat(item.style.top);
+      currentTop += item.speed;
+      if (currentTop > gameHeight - cityHeight - 50) {
+        // Produto chegou na cidade sem ser coletado: fim do jogo
+        endGame();
+      } else {
+        item.style.top = `${currentTop}px`;
+      }
     });
   }
 
-  function selectAnswer(index) {
-    if(index === questions[currentQuestion].answer) {
-      score++;
-    }
-    currentQuestion++;
-    if(currentQuestion < questions.length) {
-      showQuestion();
-    } else {
-      showResult();
-    }
+  function gameLoop() {
+    updateItems();
   }
 
-  function showResult() {
-    quiz.style.display = 'none';
-    result.st
+  let messageTimeout;
+  function showMessage(msg) {
+    messageEl.textContent = msg;
+    clearTimeout(messageTimeout);
+    messageTimeout = setTimeout(() => {
+      messageEl.textContent = '';
+    }, 2000);
+  }
+
+  function startGame() {
+    score = 0;
+    scoreEl.textContent = `Pontuação: ${score}`;
+    startScreen.style.display = 'none';
+    gameOverScreen.style.display = 'none';
+    messageEl.textContent = '';
+    gameActive = true;
+
+    items.forEach(item => {
+      if (item.parentElement) {
+        game.removeChild(item);
+      }
+    });
+    items = [];
+
+    spawnInterval = setInterval(criarItem, 1000);
+    gameInterval = setInterval(gameLoop, 20);
+  }
+
+  function endGame() {
+    gameActive = false;
+    clearInterval(spawnInterval);
+    clearInterval(gameInterval);
+    items.forEach(item => {
+      if (item.parentElement) {
+        game.removeChild(item);
+      }
+    });
+    items = [];
+    finalScoreEl.textContent = `Sua pontuação final foi: ${score}`;
+    gameOverScreen.style.display = 'flex';
+  }
+
+  startBtn.addEventListener('click', startGame);
+  restartBtn.addEventListener('click', startGame);
+</script>
+
+</body>
+</html>
