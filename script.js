@@ -1,71 +1,63 @@
-const questions = [
-  {
-    question: "O que o campo fornece à cidade?",
-    options: ["Tecnologia", "Produtos agrícolas", "Indústrias", "Arranha-céus"],
-    answer: 1
-  },
-  {
-    question: "Qual destes vem da cidade e ajuda o campo?",
-    options: ["Adubo natural", "Máquinas agrícolas", "Vento", "Chuva"],
-    answer: 1
-  },
-  {
-    question: "O que une o campo e a cidade?",
-    options: ["Rivalidade", "Competição", "Comércio e colaboração", "Distância"],
-    answer: 2
-  }
-];
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-let current = 0;
+let player = { x: 200, y: 550, width: 40, height: 40 };
+let items = [];
 let score = 0;
 
-const questionEl = document.getElementById('question');
-const answersEl = document.getElementById('answers');
-const nextBtn = document.getElementById('next-btn');
-const resultContainer = document.getElementById('result-container');
-const scoreEl = document.getElementById('score');
+function drawPlayer() {
+  ctx.fillStyle = "lime";
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+}
 
-function showQuestion() {
-  const q = questions[current];
-  questionEl.textContent = q.question;
-  answersEl.innerHTML = '';
+function spawnItem() {
+  let x = Math.random() * (canvas.width - 30);
+  items.push({ x, y: 0, size: 30, good: Math.random() > 0.3 });
+}
 
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.textContent = opt;
-    btn.onclick = () => checkAnswer(i);
-    answersEl.appendChild(btn);
+function drawItems() {
+  items.forEach((item) => {
+    ctx.fillStyle = item.good ? "gold" : "red";
+    ctx.fillRect(item.x, item.y, item.size, item.size);
   });
 }
 
-function checkAnswer(index) {
-  if (index === questions[current].answer) score++;
-  current++;
-  if (current < questions.length) {
-    showQuestion();
-  } else {
-    showResult();
-  }
-}
-
-function showResult() {
-  document.getElementById('quiz-container').style.display = 'none';
-  resultContainer.style.display = 'block';
-  scoreEl.textContent = `Você acertou ${score} de ${questions.length} perguntas!`;
-}
-
-nextBtn.onclick = () => showQuestion();
-
-showQuestion();
-document.getElementById("next-btn").onclick = function () {
-  if (current === 0 && score === 0) {
-    showQuestion();
-  } else {
-    current++;
-    if (current < questions.length) {
-      showQuestion();
-    } else {
-      showResult();
+function updateItems() {
+  items.forEach((item) => item.y += 4);
+  items = items.filter(item => {
+    if (
+      item.x < player.x + player.width &&
+      item.x + item.size > player.x &&
+      item.y < player.y + player.height &&
+      item.y + item.size > player.y
+    ) {
+      if (item.good) score += 10;
+      else score -= 10;
+      return false;
     }
-  }
-};
+    return item.y < canvas.height;
+  });
+}
+
+function drawScore() {
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText("Pontos: " + score, 10, 30);
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawPlayer();
+  drawItems();
+  updateItems();
+  drawScore();
+  requestAnimationFrame(gameLoop);
+}
+
+setInterval(spawnItem, 1000);
+gameLoop();
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft" && player.x > 0) player.x -= 20;
+  if (e.key === "ArrowRight" && player.x + player.width < canvas.width) player.x += 20;
+});
