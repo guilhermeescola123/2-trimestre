@@ -1,26 +1,40 @@
 body {
   font-family: 'Arial', sans-serif;
-  background: #dff0d8;
+  background: linear-gradient(to bottom, #a8e063, #56ab2f);
+  color: #fff;
   text-align: center;
-  padding: 20px;
+  padding: 40px;
 }
 
 .container {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  border-radius: 12px;
   max-width: 600px;
   margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #aaa;
 }
 
-button {
+#answers button {
+  display: block;
+  margin: 10px auto;
   padding: 10px 20px;
-  font-size: 16px;
-  margin: 10px;
+  background-color: #fff;
+  color: #333;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: #4CAF50;
+}
+
+#answers button:hover {
+  background-color: #ffd700;
+}
+
+#next-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #56ab2f;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  cursor: pointer;
 }
