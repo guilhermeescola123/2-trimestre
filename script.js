@@ -57,3 +57,15 @@ function showResult() {
 nextBtn.onclick = () => showQuestion();
 
 showQuestion();
+document.getElementById("next-btn").onclick = function () {
+  if (current === 0 && score === 0) {
+    showQuestion();
+  } else {
+    current++;
+    if (current < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  }
+};
