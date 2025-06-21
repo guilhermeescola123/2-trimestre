@@ -3,13 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Corrida Campo-Cidade</title>
+  <title>Conexão Campo-Cidade</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🚜 Corrida Campo-Cidade 🏙️</h1>
-  <p>Use as setas ◀️ ▶️ para mover e conecte o campo à cidade!</p>
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <div class="container">
+    <h1>🌾🏙️ Conexão Campo-Cidade</h1>
+    <p>Teste seus conhecimentos sobre o campo e a cidade!</p>
+
+    <div id="quiz-container">
+      <h2 id="question"></h2>
+      <div id="answers"></div>
+      <button id="next-btn">Próxima</button>
+    </div>
+
+    <div id="result-container" style="display:none;">
+      <h2 id="score"></h2>
+      <button onclick="location.reload()">Jogar Novamente</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
